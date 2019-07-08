@@ -5,23 +5,23 @@ go
 --1 a. Отримати номери виробів, для яких всі деталі постачає постачальник 3
 Select productid
 	from [dbo].[products]
-			Where  productid in (Select productid	
-									from [dbo].[supplies]
-										where detailid = All(Select detailid
-																	from supplies
-																		Where supplierid = 3) )
+		Where  productid in (Select productid	
+					from [dbo].[supplies]
+						where detailid = All(Select detailid
+									from supplies
+										Where supplierid = 3) )
 		
 --1 b. Отримати номера і прізвища постачальників, які постачають деталі для якого-небудь
 -- виробу з деталлю 1 в кількості більшій, ніж середній об’єм поставок деталі 1 для цього виробу
 Select supplierid, name
 	from [dbo].[suppliers]
 		Where supplierid in ( Select supplierid 
-								from [dbo].[supplies] as s
-									Where  quantity > (Select AVG(quantity)
-														 from [dbo].[supplies]
-															where detailid = 1 
-																and productid = s.productid
-																		) 
+					from [dbo].[supplies] as s
+						Where  quantity > (Select AVG(quantity)
+									from [dbo].[supplies]
+										where detailid = 1 
+											and productid = s.productid
+											) 
 							)
 
 --1 c. Отримати повний список деталей для всіх виробів, які виготовляються в Лондоні
@@ -29,19 +29,19 @@ Select supplierid, name
 Select detailid, name
 	from [dbo].[details]
 		Where detailid in ( Select detailid
-								from [dbo].[supplies]
-									Where productid in ( Select productid
-															from [dbo].[products]
-																Where city = 'London'  )	)
+					from [dbo].[supplies]
+						Where productid in ( Select productid
+							from [dbo].[products]
+								Where city = 'London'  ))
 
 --1  d. Показати номери і назви постачальників, що постачають принаймні одну червону деталь
 Select supplierid, name
 	from [dbo].[suppliers]
 		Where supplierid in ( Select  supplierid
-								from [dbo].[supplies]
-									where detailid in ( Select detailid
-															from [dbo].[details]
-																where color = 'Red' )
+					from [dbo].[supplies]
+						where detailid in ( Select detailid
+									from [dbo].[details]
+										where color = 'Red' )
 							)
 	
 --1 e. Показати номери деталей, які використовуються принаймні в одному виробі, який поставляється постачальником 2
@@ -49,21 +49,21 @@ Select supplierid, name
 Select detailid
 	from [dbo].[details]
 		Where detailid in ( Select detailid
-								from [dbo].[supplies]
-									where supplierid in ( Select supplierid
-															from [dbo].[suppliers]
-																Where supplierid = 2))
+					from [dbo].[supplies]
+						where supplierid in ( Select supplierid
+									from [dbo].[suppliers]
+										Where supplierid = 2))
 
 --1 f. Отримати номери виробів, для яких середній об’єм поставки деталей  більший за найбільший об’єм поставки будь-якої деталі для виробу 1
 
 Select productid
 	from [dbo].[products]
 		where productid in ( Select productid
-								from [dbo].[supplies]
-									Group by productid
-										Having AVG(quantity) > (Select MAX(quantity)
-																from [dbo].[supplies]
-																	Where productid = 1) 
+					from [dbo].[supplies]
+						Group by productid
+							Having AVG(quantity) > (Select MAX(quantity)
+										from [dbo].[supplies]
+										Where productid = 1) 
 																	
 										 )
 
@@ -72,8 +72,8 @@ Select productid
 Select productid
 	from products
 		Where productid  not in ( Select productid
-									from [dbo].[supplies]
-									 )
+						from [dbo].[supplies]
+						 )
 		
 
 
@@ -118,10 +118,10 @@ Select *
 Select *
 	from  [dbo].[suppliers]
 		Where supplierid in ( Select supplierid
-								from [dbo].[supplies]
-									Where detailid in ( Select detailid
-															from [dbo].[details]
-																Where city = 'London') )
+					from [dbo].[supplies]
+						Where detailid in ( Select detailid
+									from [dbo].[details]
+										Where city = 'London') )
 																
  
 --3 d. Знайти різницю між множиною продуктів, які знаходяться в Лондоні та Парижі  і множиною продуктів, які знаходяться в Парижі та Римі
@@ -140,18 +140,18 @@ Select productid, city
 Select supplierid, detailid, productid
 	from [dbo].[supplies]
 		Where supplierid in ( Select supplierid
-								from suppliers
-									Where city = 'London')
+					from suppliers
+						Where city = 'London')
 		UNION
 
 Select supplierid, detailid, productid
 	from [dbo].[supplies]
 		Where detailid in ( Select detailid
-								from details
-									Where color = 'Green')
+					from details
+						Where color = 'Green')
 			and productid in ( Select productid
-								from [dbo].[products]
-									Where city <> 'Paris')
+						from [dbo].[products]
+							Where city <> 'Paris')
 
 
 
@@ -161,16 +161,16 @@ Select supplierid, detailid, productid
 	Select 1 as c,2 as d
 	UNION ALL
 	Select  c+1,d + 100
-		from cte
-			Where c < 110	
+	from cte
+	Where c < 110	
 			),
 	cte_2 as(
 	Select d + 10 as d2
-		from cte
+	from cte
 	)
 
 Select *
-	from cte_2
+from cte_2
 OPTION(MAXRECURSION 0)
 
 --3 b Обчислити за допомогою рекурсивної CTE факторіал від 10  та вивести у форматі таблиці з колонками Position та Value :
@@ -267,7 +267,6 @@ Declare @first as int = DATEPART(WEEKDAY, '2019-05-01')
 		from [dbo].[geography] as g2 
 			 join cte ON  g2.region_id = cte.id
 				
-
 )
 
 Select * 
