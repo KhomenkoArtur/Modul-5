@@ -5,9 +5,9 @@ go
 --1 
 Select productid
 	from [dbo].[products]
-			Where  productid in (Select productid	
-									from [dbo].[supplies]
-										where detailid = All(Select detailid
+		Where  productid in (Select productid	
+					from [dbo].[supplies]
+						where detailid = All(Select detailid
 																	from supplies
 																		Where supplierid = 3) )
 		
@@ -15,11 +15,11 @@ Select productid
 Select supplierid, name
 	from [dbo].[suppliers]
 		Where supplierid in ( Select supplierid 
-								from [dbo].[supplies] as s
-									Where  quantity > (Select AVG(quantity)
-														 from [dbo].[supplies]
-															where detailid = 1 
-																and productid = s.productid
+					from [dbo].[supplies] as s
+						Where  quantity > (Select AVG(quantity)
+									 from [dbo].[supplies]
+										where detailid = 1 
+											and productid = s.productid
 																		) 
 							)
 
@@ -28,40 +28,40 @@ Select supplierid, name
 Select detailid, name
 	from [dbo].[details]
 		Where detailid in ( Select detailid
-								from [dbo].[supplies]
-									Where productid in ( Select productid
-															from [dbo].[products]
-																Where city = 'London'  )	)
+					from [dbo].[supplies]
+						Where productid in ( Select productid
+									from [dbo].[products]
+										Where city = 'London'  )	)
 
 --4
 Select supplierid, name
 	from [dbo].[suppliers]
 		Where supplierid in ( Select  supplierid
-								from [dbo].[supplies]
-									where detailid in ( Select detailid
-															from [dbo].[details]
-																where color = 'Red' )
+					from [dbo].[supplies]
+						where detailid in ( Select detailid
+									from [dbo].[details]
+										where color = 'Red' )
 							)
 	
 --5
 Select detailid
 	from [dbo].[details]
 		Where detailid in ( Select detailid
-								from [dbo].[supplies]
-									where supplierid in ( Select supplierid
-															from [dbo].[suppliers]
-																Where supplierid = 2))
+					from [dbo].[supplies]
+						where supplierid in ( Select supplierid
+									from [dbo].[suppliers]
+									Where supplierid = 2))
 
 --6
 
 Select productid
 	from [dbo].[products]
 		where productid in ( Select productid
+					from [dbo].[supplies]
+					Group by productid
+					Having AVG(quantity) > (Select MAX(quantity)
 								from [dbo].[supplies]
-									Group by productid
-										Having AVG(quantity) > (Select MAX(quantity)
-																from [dbo].[supplies]
-																	Where productid = 1) 
+								Where productid = 1) 
 																	
 										 )
 
@@ -70,7 +70,7 @@ Select productid
 Select productid
 	from products
 		Where productid  not in ( Select productid
-									from [dbo].[supplies]
+					from [dbo].[supplies]
 									 )
 		
 
@@ -115,10 +115,10 @@ Select *
 Select *
 	from  [dbo].[suppliers]
 		Where supplierid in ( Select supplierid
-								from [dbo].[supplies]
-									Where detailid in ( Select detailid
-															from [dbo].[details]
-																Where city = 'London') )
+						from [dbo].[supplies]
+							Where detailid in ( Select detailid
+								from [dbo].[details]
+									Where city = 'London') )
 																
  
 --4
@@ -135,16 +135,16 @@ Select productid, city
 Select supplierid, detailid, productid
 	from [dbo].[supplies]
 		Where supplierid in ( Select supplierid
-								from suppliers
-									Where city = 'London')
+					from suppliers
+						Where city = 'London')
 		UNION
 
 Select supplierid, detailid, productid
 	from [dbo].[supplies]
 		Where detailid in ( Select detailid
-								from details
-									Where color = 'Green')
-			and productid in ( Select productid
+					from details
+						Where color = 'Green')
+							and productid in ( Select productid
 								from [dbo].[products]
 									Where city <> 'Paris')
 
