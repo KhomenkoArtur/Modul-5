@@ -2,7 +2,7 @@ Use modul5;
 
 go
 ----------------------TASKS With SubQuery--------------------
---1 a. Отримати номери виробів, для яких всі деталі постачає постачальник 3
+--1 
 Select productid
 	from [dbo].[products]
 			Where  productid in (Select productid	
@@ -11,8 +11,7 @@ Select productid
 																	from supplies
 																		Where supplierid = 3) )
 		
---1 b. Отримати номера і прізвища постачальників, які постачають деталі для якого-небудь
--- виробу з деталлю 1 в кількості більшій, ніж середній об’єм поставок деталі 1 для цього виробу
+--2
 Select supplierid, name
 	from [dbo].[suppliers]
 		Where supplierid in ( Select supplierid 
@@ -24,7 +23,7 @@ Select supplierid, name
 																		) 
 							)
 
---1 c. Отримати повний список деталей для всіх виробів, які виготовляються в Лондоні
+--3
 
 Select detailid, name
 	from [dbo].[details]
@@ -34,7 +33,7 @@ Select detailid, name
 															from [dbo].[products]
 																Where city = 'London'  )	)
 
---1  d. Показати номери і назви постачальників, що постачають принаймні одну червону деталь
+--4
 Select supplierid, name
 	from [dbo].[suppliers]
 		Where supplierid in ( Select  supplierid
@@ -44,8 +43,7 @@ Select supplierid, name
 																where color = 'Red' )
 							)
 	
---1 e. Показати номери деталей, які використовуються принаймні в одному виробі, який поставляється постачальником 2
-
+--5
 Select detailid
 	from [dbo].[details]
 		Where detailid in ( Select detailid
@@ -54,7 +52,7 @@ Select detailid
 															from [dbo].[suppliers]
 																Where supplierid = 2))
 
---1 f. Отримати номери виробів, для яких середній об’єм поставки деталей  більший за найбільший об’єм поставки будь-якої деталі для виробу 1
+--6
 
 Select productid
 	from [dbo].[products]
@@ -68,7 +66,7 @@ Select productid
 										 )
 
 
---1 g. Вибрати вироби, що ніколи не постачались (під-запит)
+--7
 Select productid
 	from products
 		Where productid  not in ( Select productid
@@ -79,7 +77,7 @@ Select productid
 
 -------------------------Tasks with UNION, UNION ALL , EXCEPT, INTERSECT---------------------------
 
---2 a. Вибрати постачальників з Лондона або Парижу
+--1
 
 Select supplierid, name, city 
 	from [dbo].[suppliers]
@@ -93,8 +91,7 @@ Select supplierid, name, city
 
 
 
---2 b. Вибрати всі міста, де є постачальники  і/або деталі (два запити – перший повертає міста з дублікатами, другий без дублікатів) .
--- Міста у кожному запиті  відсортувати в алфавітному порядку 
+--2
 Select city
 	from [dbo].[suppliers]
 		UNION all
@@ -110,7 +107,7 @@ Select city
 	order by city
 
 
---2 c. Вибрати всіх постачальників за вийнятком тих, що постачають деталі з Лондона 
+--3
 
 Select *
 	from  [dbo].[suppliers]	
@@ -124,8 +121,7 @@ Select *
 																Where city = 'London') )
 																
  
---3 d. Знайти різницю між множиною продуктів, які знаходяться в Лондоні та Парижі  і множиною продуктів, які знаходяться в Парижі та Римі
-
+--4
 Select productid, city
 	from [dbo].[products]
 		Where city in ('London', 'Paris')
@@ -135,8 +131,7 @@ Select productid, city
 		Where city in ('Paris','Roma')
 
 
---3 e. Вибрати поставки, що зробив постачальник з Лондона, а також поставки зелених деталей за виключенням поставлених виробів з Парижу
---(код постачальника, код деталі, код виробу)	
+--5
 Select supplierid, detailid, productid
 	from [dbo].[supplies]
 		Where supplierid in ( Select supplierid
@@ -156,7 +151,7 @@ Select supplierid, detailid, productid
 
 
 ---------------------------------TASKS WITH CTE--------------------------------------
---3 a Написати довільний запит з двома СТЕ  (в одному є звертання до іншого) 
+--1
 ;With cte as(
 	Select 1 as c,2 as d
 	UNION ALL
@@ -173,7 +168,7 @@ Select *
 	from cte_2
 OPTION(MAXRECURSION 0)
 
---3 b Обчислити за допомогою рекурсивної CTE факторіал від 10  та вивести у форматі таблиці з колонками Position та Value :
+--2
 ;With Factorial as 
 (
 	Select 1 as Position , 1 as Value
@@ -186,7 +181,7 @@ OPTION(MAXRECURSION 0)
 Select Position, Value
 	from Factorial
 
---3 c Обчислити за допомогою рекурсивної CTE перші 20 елементів ряду Фібоначчі та вивести у форматі таблиці з колонками Position та Value   :
+--3
   
 ;With fibonacci as (
       Select 1 as Position, 1 as Value, 0 as n1
@@ -198,9 +193,7 @@ Select Position, Value
 Select Position, Value
 from fibonacci
 
---3 d Розділити вхідний період 2013-11-25 до 2014-03-05 на періоди по календарним місяцям за допомогою рекурсивної
--- CTE та вивести у форматі таблиці з колонками StartDate та EndDate  	
-
+--3 
 ;With cte as 
 
 (
@@ -217,9 +210,7 @@ Select MIN(Date1) as StartDate, MAX(Date1) as EndDate
 		from cte) as a
 	Group by Month1
 
---3 e Розрахувати календар поточного місяця за допомогою рекурсивної CTE та вивести дні місяця у форматі таблиці з колонками 				
---Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday
-
+--4
 SET Datefirst  1
 Declare @first as int = DATEPART(WEEKDAY, '2019-05-01')
 
@@ -253,7 +244,7 @@ Declare @first as int = DATEPART(WEEKDAY, '2019-05-01')
 				from cte) as a
 			group by weeknum
 
---3 f Написати запит  який повертає регіони першого рівня
+--5
 
 ;With cte as 
 (
@@ -274,7 +265,7 @@ Select *
 	from cte
 		Where place_level = 1
 
---3 j  Написати запит який повертає під-дерево для конкретного регіону  (наприклад, Івано-Франківськ)----------------------
+--6
 ;with cte as 
 (
 	Select region_id, id , name, 0 as place_level
@@ -291,7 +282,7 @@ Select *
 Select *
 	from  cte 
 		
---3 k Написати запит котрий вертає повне дерево  від root ('Ukraine') і додаткову колонку, яка вказує на рівень в ієрархії
+--7
 
 ;with cte as 
 (
@@ -309,7 +300,7 @@ Select *
 Select *
 	from  cte 
 
---3 l Написати запит який повертає дерево для регіону Lviv 
+--8
 
 ;With cte as 
 	(
@@ -327,7 +318,7 @@ Select *
 	Select *
 		from  cte 
 		
---3 m Написати запит який повертає дерево зі шляхами для регіону Lviv.
+--9
 
 ;With cte as 
 (
@@ -348,7 +339,7 @@ Select *
 Select name, place_id, path
 	from  cte
 	
---3 n Написати запит, який повертає дерево  зі шляхами і довжиною шляхів для регіону Lviv
+--10
 ;with cte as 
 (
 	Select name,id,region_id, 0 as pathlen,
